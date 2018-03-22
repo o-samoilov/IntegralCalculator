@@ -7,8 +7,11 @@ if ( ! Detector.webgl ) {
 
 }
 
-var myFunction = new Func( 'x+1', ['x'] );
-console.log(myFunction.getValueFunc([1]));
+var pointA = new Point(0, 11);
+var pointB = new Point(5, 2);
 
-var sceneBuilder = new SceneBuilder();
+var myFunction = new Func( 'x *x', ['x'] );
+var terrainFunc = new Func( '5 + x + z', ['x', 'z'] );
+
+var sceneBuilder = new SceneBuilder(myFunction, pointA, pointB, terrainFunc);
 sceneBuilder.build();

@@ -15,19 +15,21 @@ function Func( func, variablesNamesArray ) {
 
         return this.isFuncValid && valuesVariablesArray.length == this._variablesNamesArray.length;
 	};
+}
 
-	this.getValueFunc = function ( valuesVariablesArray ) {
-        var temp = this._func;
+Func.prototype.getValueFunc = function ( valuesVariablesArray ) {
+    var temp = this._func;
+    var variableName;
 
-	    if (!this._isFuncCanProcess) {
-            return;
-        }
+    if (!this._isFuncCanProcess) {
+        return;
+    }
 
-        for (var i = 0; i < valuesVariablesArray.length; i++) {
+    for (var i = 0; i < valuesVariablesArray.length; i++) {
+        while ( temp.indexOf(this._variablesNamesArray[i]) != -1 ) {
             temp = temp.replace(this._variablesNamesArray[i], valuesVariablesArray[i])
         }
+    }
 
-        return eval(temp);
-	};
-
-}
+    return eval(temp);
+};
