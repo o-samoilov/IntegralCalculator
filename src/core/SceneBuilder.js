@@ -1,5 +1,5 @@
 
-function SceneBuilder(func, pointA, pointB, terrainFunc) {
+function SceneBuilder(func, terrainFunc, xmin, xmax) {
 
     // - Global variables -
     // Heightfield parameters
@@ -21,9 +21,15 @@ function SceneBuilder(func, pointA, pointB, terrainFunc) {
     var step = 0.1;
 
     this.func           = func;
-    this.pointA         = pointA;
-    this.pointB         = pointB;
     this.terrainFunc    = terrainFunc;
+    this.ranges         = {
+        XMIN: xmin,
+        XMAX: xmax,
+        YMIN: 0,
+        YMAX: 0,
+        ZMAX: 0,
+        ZMIN: 0
+    };
 
 	this.build = function () {
 
@@ -40,9 +46,10 @@ function SceneBuilder(func, pointA, pointB, terrainFunc) {
         this.initCamera();
         this.initAreaIntegral();
 
-
+        //TODO draw Terrain
         //heightData = this.generateHeight( terrainWidth, terrainDepth, terrainMinHeight, terrainMaxHeight );
         //this.initTerrain();
+
         this.initLight();
         this.initHelpers();
     }
@@ -87,7 +94,7 @@ function SceneBuilder(func, pointA, pointB, terrainFunc) {
         camera.position.z = terrainDepthExtents / 2;
         camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
 
-        controls = new THREE.OrbitControls( camera );
+        controls = new THREE.OrbitControls( camera, renderer.domElement );
     }
     this.initAreaIntegral = function () {
         var geometryXZ = new THREE.Geometry();
@@ -96,25 +103,29 @@ function SceneBuilder(func, pointA, pointB, terrainFunc) {
 
         var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
         var materialSurface = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
-        var startPoint;
-        var endPoint;
 
         var x, y, z;
-
-        if(this.pointA.Compare(pointB)) {
-            startPoint = pointB;
-            endPoint = pointA;
-        } else {
-            startPoint = pointA;
-            endPoint = pointB;
-        }
-
         var countPoint = 0;
-        step=1;
 
-        for(x = startPoint.x; x < endPoint.x; x += step) {
+        for( x = this.ranges.XMIN; x < this.ranges.XMAX; x += step ) {
             z = this.func.getValueFunc([x]);
             y = this.terrainFunc.getValueFunc([x, z]);
+
+            if (this.ranges.YMAX < y) {
+                this.ranges.YMAX = y;
+            }
+
+            if (this.ranges.YMIN > y) {
+                this.ranges.YMIN = y;
+            }
+
+            if (this.ranges.ZMAX < z) {
+                this.ranges.ZMAX = z;
+            }
+
+            if (this.ranges.ZMIN > z) {
+                this.ranges.ZMIN = z;
+            }
 
             geometryXZ.vertices.push(new THREE.Vector3( x, 0, z ));
             geometryXYZ.vertices.push(new THREE.Vector3( x, y, z ));
@@ -125,7 +136,6 @@ function SceneBuilder(func, pointA, pointB, terrainFunc) {
             );
 
             countPoint++;
-
         }
 
         for(var i = 0; i < countPoint * 2 - 2; i += 2) {
@@ -133,14 +143,15 @@ function SceneBuilder(func, pointA, pointB, terrainFunc) {
             surface.faces.push( new THREE.Face3( i+1, i+2, i+3 ) );
         }
 
+
+        var mesh = new THREE.Mesh( surface, materialSurface ) ;
+        scene.add( mesh );
+
         var lineXZ = new THREE.Line( geometryXZ, material );
         scene.add( lineXZ );
 
         var lineXYZ = new THREE.Line( geometryXYZ, material );
         scene.add( lineXYZ );
-
-        var mesh = new THREE.Mesh( surface, materialSurface ) ;
-        scene.add( mesh );
     }
     this.initTerrain = function () {
         var geometry = new THREE.PlaneBufferGeometry( terrainWidthExtents, terrainDepthExtents, terrainWidth - 1, terrainDepth - 1 );
