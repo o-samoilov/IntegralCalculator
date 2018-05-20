@@ -1,5 +1,4 @@
-
-function SceneBuilder(func, terrainFunc, xmin, xmax) {
+function SceneBuilder() {
 
     // - Global variables -
     // Heightfield parameters
@@ -20,38 +19,36 @@ function SceneBuilder(func, terrainFunc, xmin, xmax) {
     //const
     var step = 0.1;
 
-    this.func           = func;
-    this.terrainFunc    = terrainFunc;
-    this.ranges         = {
-        XMIN: xmin,
-        XMAX: xmax,
-        YMIN: 0,
-        YMAX: 0,
-        ZMAX: 0,
-        ZMIN: 0
-    };
 
-	this.build = function () {
+	this.build = function (func, terrainFunc, xmin, xmax) {
 
-		this.init();
-        this.animate();
+        this.func           = func;
+        this.terrainFunc    = terrainFunc;
+        this.ranges         = {
+            XMIN: xmin,
+            XMAX: xmax,
+            YMIN: 0,
+            YMAX: 0,
+            ZMAX: 0,
+            ZMIN: 0
+        };
 
-	};
-
-    this.init = function() {
-
-        this.initGraphics();
-
-
-        this.initCamera();
         this.initAreaIntegral();
+
+
+        //gui.__folders.Builder.domElement.children[0].children[1].setAttribute('text', '123')
 
         //TODO draw Terrain
         //heightData = this.generateHeight( terrainWidth, terrainDepth, terrainMinHeight, terrainMaxHeight );
         //this.initTerrain();
+	};
 
-        this.initLight();
-        this.initHelpers();
+    this.init = function() {
+        sceneBuilder.initGraphics();
+        sceneBuilder.initCamera();
+        sceneBuilder.initLight();
+        sceneBuilder.initHelpers();
+        sceneBuilder.animate();
     }
 
     this.animate = function() {
@@ -59,7 +56,6 @@ function SceneBuilder(func, terrainFunc, xmin, xmax) {
 
         this.render();
         stats.update();
-
     }
 
     this.initGraphics = function() {
@@ -143,15 +139,22 @@ function SceneBuilder(func, terrainFunc, xmin, xmax) {
             surface.faces.push( new THREE.Face3( i+1, i+2, i+3 ) );
         }
 
+        scene.remove(scene.getObjectByName("surface"));
+        scene.remove(scene.getObjectByName("geometryXZ"));
+        scene.remove(scene.getObjectByName("geometryXYZ"));
 
         var mesh = new THREE.Mesh( surface, materialSurface ) ;
+        mesh.name = "surface";
         scene.add( mesh );
 
         var lineXZ = new THREE.Line( geometryXZ, material );
+        lineXZ.name = "geometryXZ";
         scene.add( lineXZ );
 
         var lineXYZ = new THREE.Line( geometryXYZ, material );
+        lineXYZ.name = "geometryXYZ";
         scene.add( lineXYZ );
+
     }
     this.initTerrain = function () {
         var geometry = new THREE.PlaneBufferGeometry( terrainWidthExtents, terrainDepthExtents, terrainWidth - 1, terrainDepth - 1 );
@@ -173,7 +176,7 @@ function SceneBuilder(func, terrainFunc, xmin, xmax) {
         terrainMesh.receiveShadow = true;
         terrainMesh.castShadow = true;
         terrainMesh.position.set( 0, 0, 0 );
-        terrainMesh.material.opacity = 0.7;
+        terrainMesh.material.opacity = 0.6;
         terrainMesh.material.transparent = true;
 
         scene.add( terrainMesh );
@@ -273,7 +276,8 @@ function SceneBuilder(func, terrainFunc, xmin, xmax) {
     }
 
     this.render = function() {
+        //camera.rotation.y += 0.01;
+
         renderer.render( scene, camera );
     }
-
 }

@@ -1,14 +1,16 @@
-
 // Detects webgl
-if ( ! Detector.webgl ) {
+if (!Detector.webgl) {
 
-	Detector.addGetWebGLMessage();
-	document.getElementById( 'container' ).innerHTML = "";
+    Detector.addGetWebGLMessage();
+    document.getElementById('container').innerHTML = "";
 
 }
 
-var myFunction = new Func( 'x * x', ['x'] );
-var terrainFunc = new Func( 'Math.sin(x) * z', ['x', 'z'] );
+var configs = {
+    serverURL: "www.lll.com",
+    helpURL:   "https://github.com/a-samoylov/IntegralCalculator/blob/master/README.md",
+    gitHubURL: "https://github.com/a-samoylov/IntegralCalculator",
+};
 
-var sceneBuilder = new SceneBuilder(myFunction, terrainFunc, -5, 5 );
-sceneBuilder.build();
+var sceneBuilder = new SceneBuilder();
+sceneBuilder.init();

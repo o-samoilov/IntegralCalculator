@@ -36,49 +36,12 @@
         <script src="js/libs/stats.min.js"></script>
 
         <script src="js/libs/dat.gui.min.js"></script>
+        <script src="js/dat.gui.js"></script>
 
         <script src="../src/objects/Point.js"></script>
         <script src="../src/objects/Function.js"></script>
         <script src="../src/core/SceneBuilder.js"></script>
         <script src="../src/core/Bootsrap.js"></script>
 
-
-        <script>
-            // GUI
-            var gui = new dat.GUI();
-            var folderBuilder = gui.addFolder( "Builder" );
-
-            var FizzyText = function() {
-                this.function = "";
-                this.color = "#ff0000";
-                this.fontSize = 24;
-                this.border = false;
-                this.fontFamily = "sans-serif";
-                this.explode = function() {
-                    var textFunction = this.function;
-                    sceneBuilder.build();
-                };
-            };
-
-            var fizzyText = new FizzyText();
-            folderBuilder.add(fizzyText, 'function');
-            folderBuilder.add(fizzyText, 'explode');
-            gui.remember(fizzyText);
-
-            /*var btnBuilder = {
-                Build: function() {
-                    alert(1);
-                    //sceneBuilder.build();
-                }
-            };
-            folderBuilder.add(btnBuilder, 'Build');*/
-
-            /*folderBuilder.add(text, 'function').onChange(function (input) {
-
-                alert(1);
-            });*/
-
-
-        </script>
     </body>
 </html>
