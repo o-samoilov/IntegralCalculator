@@ -18,6 +18,31 @@
 
             #container {
 
+             }
+
+            #container-result {
+                width: 50%;
+                position: fixed;
+                background: #a7b1bd;
+                margin-left: 25%;
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
+            }
+
+            #table-metadata {
+                width: 100%;
+            }
+
+            #table-integral-sum {
+                width: 100%;
+            }
+
+            .td-result {
+                border: 1px solid #006081;
+            }
+
+            .span-loading {
+                font-size: 24px;
             }
 
             a {
@@ -27,6 +52,11 @@
         </style>
     </head>
     <body>
+
+        <div id="container-result">
+            <table id="table-metadata"></table>
+            <table id="table-integral-sum"></table>
+        </div>
         <div id="container"><br /><br /><br /><br /><br />Loading...</div>
 
         <script src="../build/three.js"></script>
@@ -34,6 +64,8 @@
         <script src="js/controls/OrbitControls.js"></script>
         <script src="js/Detector.js"></script>
         <script src="js/libs/stats.min.js"></script>
+
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
         <script src="js/libs/dat.gui.min.js"></script>
         <script src="js/dat.gui.js"></script>
