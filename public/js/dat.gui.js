@@ -44,11 +44,14 @@ function calculateIntegral(func, surface, xMin, xMax) {
         },
 
         beforeSend: function (jqXHR, settings) {
+            $('#container-result').html("");
             $('#container-result').append($('<span>Loading...</span>').addClass('span-loading'));
         },
 
         success: function(result, status, xhr) {
-            $('#container-result span').remove();
+            $('#container-result').html("");
+            $('#container-result').append($('<table id="table-metadata"></table>'));
+            $('#container-result').append($('<table id="table-integral-sum"></table>'));
 
             var response = JSON.parse(result);
 
