@@ -1,32 +1,20 @@
 function Func( func, variablesNamesArray ) {
 
-	this._func                  = func;
-	this._variablesNamesArray   = variablesNamesArray;
+    this._func                  = func;
+    this._variablesNamesArray   = variablesNamesArray;
 
-	this._isFuncValid = false;
-	this._wasValidate = false;
+    this._isFuncValid = false;
+    this._wasValidate = false;
 
-	this._isReplaceExpression = false;
-    this.replaceExpression = function () {
-        var expressions = this._replaceExpressions;
-        var func = this._func;
+    this._isReplaceExpression = false;
 
-        Object.keys(expressions).map(function(objectKey, index) {
-            while (func.indexOf(objectKey) != -1) {
-                func = func.replace(objectKey, expressions[objectKey]);
-            }
-        });
-
-        this._func = func;
-
-    };
-
-	this._validExpressions = {
+    this._validExpressions = {
         '(': '(',
         ')': ')',
 
         ' ': '',
         ',': ',',
+        '.': '.',
 
         '+': '+',
         '-': '-',
@@ -56,8 +44,30 @@ function Func( func, variablesNamesArray ) {
         'POW': 'Math.pow',
     };
 
-	this._funcValid = function () {
-	    let tempFunc = this._func;
+    this.getFunc = function () {
+        return this._func;
+    };
+
+    this.getVars = function () {
+        return this._variablesNamesArray;
+    };
+
+    this.replaceExpression = function () {
+        var expressions = this._replaceExpressions;
+        var func = this._func;
+
+        Object.keys(expressions).map(function(objectKey, index) {
+            while (func.indexOf(objectKey) != -1) {
+                func = func.replace(objectKey, expressions[objectKey]);
+            }
+        });
+
+        this._func = func;
+
+    };
+
+    this._funcValid = function () {
+        let tempFunc = this._func;
 
         Object.keys(this._validExpressions).map(function(objectKey, index) {
             while (tempFunc.indexOf(objectKey) != -1) {
@@ -73,11 +83,11 @@ function Func( func, variablesNamesArray ) {
 
 
         if (tempFunc.length > 0) {
-	        return false;
+            return false;
         }
 
         return true;
-	};
+    };
 
     this.isFuncValid = function () {
 

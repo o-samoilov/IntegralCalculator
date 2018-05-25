@@ -18,31 +18,37 @@
 
             #container {
 
-             }
+            }
 
             #container-result {
-                width: 50%;
+                width: 20%;
+                margin-left: 20px;
                 position: fixed;
-                background: #a7b1bd;
-                margin-left: 25%;
-                border-bottom-left-radius: 10px;
-                border-bottom-right-radius: 10px;
+                background: #1a1a1a;
+                border-bottom-left-radius: 5px;
+                border-bottom-right-radius: 5px;
             }
 
             #table-metadata {
                 width: 100%;
+                margin-top: 25px;
             }
 
             #table-integral-sum {
                 width: 100%;
+                margin-top: 25px;
             }
 
             .td-result {
-                border: 1px solid #006081;
+                font: 16px Lucida Grande,sans-serif;
+                color: #fff;
+                border-bottom: 1px solid #2c2c2c;
+                padding: 5px;
             }
 
             .span-loading {
-                font-size: 24px;
+                font: 24px Lucida Grande,sans-serif;
+                color: #fff;
             }
 
             a {
@@ -53,10 +59,7 @@
     </head>
     <body>
 
-        <div id="container-result">
-            <!--<table id="table-metadata"></table>
-            <table id="table-integral-sum"></table>-->
-        </div>
+        <div id="container-result"></div>
         <div id="container"><br /><br /><br /><br /><br />Loading...</div>
 
         <script src="../build/three.js"></script>
