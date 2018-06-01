@@ -7,9 +7,9 @@ if (!Detector.webgl) {
 }
 
 var configs = {
-    serverURL: "http://127.0.0.1/G/IntegralCalculatorServer/public/index.php",
+    serverURL: "http://integralcalculatorserver.local/",
     helpURL:   "https://github.com/a-samoylov/IntegralCalculator/blob/master/README.md",
-    gitHubURL: "https://github.com/a-samoylov/IntegralCalculator",
+    gitHubURL: "https://github.com/a-samoylov/IntegralCalculator"
 };
 
 var sceneBuilder = new SceneBuilder();

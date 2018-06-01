@@ -41,17 +41,17 @@ var GuiContent = function() {
 
 var guiContent = new GuiContent();
 builderFolder.add(guiContent, 'func').name('L(x): ');
-builderFolder.add(guiContent, 'surface').name('f(x, z):');
+builderFolder.add(guiContent, 'surface').name('f(x, y):');
 
 builderFolder.add(guiContent, 'xMin');
 builderFolder.add(guiContent, 'xMax');
 builderFolder.add(guiContent, 'build').name('Build');
 
-examplesFolder.add(guiContent, 'example1').name('Example1');
-examplesFolder.add(guiContent, 'example2').name('Example2');
-examplesFolder.add(guiContent, 'example3').name('Example3');
-examplesFolder.add(guiContent, 'example4').name('Example4');
-examplesFolder.add(guiContent, 'example5').name('Example5');
+examplesFolder.add(guiContent, 'example1').name('Example #1');
+examplesFolder.add(guiContent, 'example2').name('Example #2');
+examplesFolder.add(guiContent, 'example3').name('Example #3');
+examplesFolder.add(guiContent, 'example4').name('Example #4');
+examplesFolder.add(guiContent, 'example5').name('Example #5');
 
 gui.add(guiContent, 'Help');
 gui.add(guiContent, 'GitHub');
@@ -74,7 +74,7 @@ function calculateIntegral(func, surface, xMin, xMax) {
                 vars: surface.getVars()
             },
             xMin: xMin,
-            xMax: xMax,
+            xMax: xMax
         }
     };
 
@@ -95,27 +95,28 @@ function calculateIntegral(func, surface, xMin, xMax) {
 
             var response = JSON.parse(result);
 
-            for (let i = 0; i < response.metadata.length; i++) {
+            for (var i = 0; i < response.metadata.length; i++) {
                 $('#table-metadata').append($('<tr>'));
                 $('#table-metadata tr:last').append($('<td>').append($('<span>' + response.metadata[i].name + ': ' + response.metadata[i].value + '</span>')).addClass('td-result'));
             }
 
-            for (let i = 0; i < response.integral_sum.length; i++) {
+            for (var i = 0; i < response.integral_sum.length; i++) {
                 $('#table-integral-sum').append($('<tr>'));
                 $('#table-integral-sum tr:last').append($('<td>').append($('<span>' + response.integral_sum[i].name + ': ' + response.integral_sum[i].value + '</span>')).addClass('td-result'));
             }
         },
 
         error: function(xhr, status, error) {
-            alert("Error calculate Integral");
+            alert('Server error: ' + JSON.parse(xhr.responseText).error);
+            $('#container-result').html("");
         }
     });
 
 }
 
 function process(func, surface, xMin, xMax) {
-    let myFunction = new Func( func, ['x'] );
-    let terrainFunc = new Func( surface, ['x', 'y'] );
+    var myFunction = new Func( func, ['x'] );
+    var terrainFunc = new Func( surface, ['x', 'y'] );
 
     if (!myFunction.isFuncValid()) {
         alert('Invalid L(x)');

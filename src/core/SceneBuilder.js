@@ -2,23 +2,20 @@ function SceneBuilder() {
 
     // - Global variables -
     // Heightfield parameters
-    var terrainWidthExtents = 100;
-    var terrainDepthExtents = 100;
-    var terrainWidth = 100;
-    var terrainDepth = 100;
-    var terrainHalfWidth = terrainWidth / 2;
-    var terrainHalfDepth = terrainDepth / 2;
-    var terrainMaxHeight = 2;
-    var terrainMinHeight = 0;
+    /*var terrainWidthExtents = 10;
+    var terrainDepthExtents = 10;
+    var terrainWidth = 10;
+    var terrainDepth = 10;*/
 
     // Graphics variables
     var container, stats;
     var camera, controls, scene, renderer;
     var terrainMesh, texture;
 
+    var heightData;
+
     //const
     var step = 0.01;
-
 
     this.build = function (func, terrainFunc, xmin, xmax) {
 
@@ -27,20 +24,22 @@ function SceneBuilder() {
         this.ranges         = {
             XMIN: xmin,
             XMAX: xmax,
-            YMIN: 0,
-            YMAX: 0,
-            ZMAX: 0,
-            ZMIN: 0
+            YMIN: '',
+            YMAX: '',
+            ZMAX: '',
+            ZMIN: ''
         };
 
         this.initAreaIntegral();
 
-
-        //gui.__folders.Builder.domElement.children[0].children[1].setAttribute('text', '123')
-
         //TODO draw Terrain
-        //heightData = this.generateHeight( terrainWidth, terrainDepth, terrainMinHeight, terrainMaxHeight );
-        //this.initTerrain();
+        var terrainWidthExtents = this.ranges.XMAX - this.ranges.XMIN;
+        var terrainDepthExtents = this.ranges.YMAX - this.ranges.YMIN;
+        var terrainWidth = terrainWidthExtents;
+        var terrainDepth = terrainDepthExtents;
+
+        heightData = this.generateHeight( terrainWidth, terrainDepth );
+        this.initTerrain(terrainWidthExtents, terrainDepthExtents, terrainWidth, terrainDepth);
     };
 
     this.init = function() {
@@ -90,7 +89,7 @@ function SceneBuilder() {
 
         camera.position.y = 20;//heightData[ terrainHalfWidth + terrainHalfDepth * terrainWidth ] * ( terrainMaxHeight - terrainMinHeight ) + 10;
 
-        camera.position.z = terrainDepthExtents / 2;
+        camera.position.z = 20;//terrainDepthExtents / 2;
         camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
 
         controls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -103,74 +102,75 @@ function SceneBuilder() {
         var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
         var materialSurface = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
 
-        var x, y, z;
+        var x, z, y;
         var countPoint = 0;
 
         var skippedPoints = [];
 
-        scene.remove(scene.getObjectByName("surface"));
-        scene.remove(scene.getObjectByName("geometryXZ"));
-        scene.remove(scene.getObjectByName("geometryXYZ"));
+        scene.remove(scene.getObjectByName('surface'));
+        scene.remove(scene.getObjectByName('geometryXZ'));
+        scene.remove(scene.getObjectByName('geometryXYZ'));
 
         for( x = this.ranges.XMIN; x < this.ranges.XMAX; x += step ) {
-            z = this.func.getValueFunc([x]);
-
-            if (!isFinite(z)) {
-                continue;
-            }
-
-            y = this.terrainFunc.getValueFunc([x, z]);
+            y = this.func.getValueFunc([x]);
 
             if (!isFinite(y)) {
                 continue;
             }
 
-            if (this.ranges.YMAX < y) {
+            z = this.terrainFunc.getValueFunc([x, y]);
+
+            if (!isFinite(z)) {
+                continue;
+            }
+
+            if (this.ranges.YMAX === '' || this.ranges.YMAX < y) {
                 this.ranges.YMAX = y;
             }
 
-            if (this.ranges.YMIN > y) {
+            if (this.ranges.YMIN === '' || this.ranges.YMIN > y) {
                 this.ranges.YMIN = y;
             }
 
-            if (this.ranges.ZMAX < z) {
+            if (this.ranges.ZMAX === '' || this.ranges.ZMAX < z) {
                 this.ranges.ZMAX = z;
             }
 
-            if (this.ranges.ZMIN > z) {
+            if (this.ranges.ZMIN === '' || this.ranges.ZMIN > z) {
                 this.ranges.ZMIN = z;
             }
 
-            geometryXZ.vertices.push(new THREE.Vector3( x, 0, z ));
-            geometryXYZ.vertices.push(new THREE.Vector3( x, y, z ));
+            geometryXZ.vertices.push(new THREE.Vector3( x, 0, y ));
+            geometryXYZ.vertices.push(new THREE.Vector3( x, z, y ));
 
             surface.vertices.push(
-                new THREE.Vector3( x, 0, z ),
-                new THREE.Vector3( x, y, z )
+                new THREE.Vector3( x, 0, y ),
+                new THREE.Vector3( x, z, y )
             );
 
             countPoint++;
         }
 
-        for(var i = 0; i < countPoint * 2 - 2; i += 2) {
+        for ( var i = 0; i < countPoint * 2 - 2; i += 2 ) {
             surface.faces.push( new THREE.Face3( i, i+1, i+2 ) );
             surface.faces.push( new THREE.Face3( i+1, i+2, i+3 ) );
         }
 
         var mesh = new THREE.Mesh( surface, materialSurface ) ;
-        mesh.name = "surface";
+        mesh.name = 'surface';
         scene.add( mesh );
 
         var lineXZ = new THREE.Line( geometryXZ, material );
-        lineXZ.name = "geometryXZ";
+        lineXZ.name = 'geometryXZ';
         scene.add( lineXZ );
 
         var lineXYZ = new THREE.Line( geometryXYZ, material );
-        lineXYZ.name = "geometryXYZ";
+        lineXYZ.name = 'geometryXYZ';
         scene.add( lineXYZ );
 
     };
-    this.initTerrain = function () {
+    this.initTerrain = function (terrainWidthExtents, terrainDepthExtents, terrainWidth, terrainDepth) {
+
         var geometry = new THREE.PlaneBufferGeometry( terrainWidthExtents, terrainDepthExtents, terrainWidth - 1, terrainDepth - 1 );
         geometry.rotateX( - Math.PI / 2 );
 
@@ -187,15 +187,20 @@ function SceneBuilder() {
 
         var groundMaterial = new THREE.MeshPhongMaterial( { color: 0xFFFFBD, side: THREE.DoubleSide } );// side: THREE.DoubleSide
         terrainMesh = new THREE.Mesh( geometry, groundMaterial );
-        terrainMesh.receiveShadow = true;
-        terrainMesh.castShadow = true;
-        terrainMesh.position.set( 0, 0, 0 );
-        terrainMesh.material.opacity = 0.6;
+        //terrainMesh.receiveShadow = true;
+        //terrainMesh.castShadow = true;
+        //terrainMesh.position.set( 0, 0,  0);
+        //terrainMesh.position.z = 10;
+        terrainMesh.position.x = (this.ranges.XMAX - this.ranges.XMIN) / 2 - 5;
+        terrainMesh.position.z = (this.ranges.YMAX - this.ranges.YMIN) / 2;
+        terrainMesh.material.opacity = 0.8;
         terrainMesh.material.transparent = true;
 
+        scene.remove(scene.getObjectByName('terrain'));
+        terrainMesh.name = 'terrain';
         scene.add( terrainMesh );
 
-        var textureLoader = new THREE.TextureLoader();
+        /*var textureLoader = new THREE.TextureLoader();
         textureLoader.load( "textures/grid.png", function ( texture ) {
 
             texture.wrapS = THREE.RepeatWrapping;
@@ -204,7 +209,7 @@ function SceneBuilder() {
             groundMaterial.map = texture;
             groundMaterial.needsUpdate = true;
 
-        } );
+        });*/
     };
     this.initLight = function () {
         var light = new THREE.DirectionalLight( 0xffffff, 1 );
@@ -246,7 +251,7 @@ function SceneBuilder() {
 
     };
 
-    this.generateHeight = function( width, depth, minHeight, maxHeight ) {
+    this.generateHeight = function( width, depth) {
 
         // Generates the height data (a sinus wave)
 
@@ -274,15 +279,10 @@ function SceneBuilder() {
             }
         }*/
 
-        //sin(x^2 + y ^2)
-        for ( var i = 0; i < width; i ++ ) {
-
-            for ( var j = 0; j < depth; j ++ ) {
-
-                data[ j * width + i ] = Math.sin( i * j );
-
+        for ( var x = 0; x < width; x ++ ) {
+            for ( var y = 0; y < depth; y ++ ) {
+                data[ y * width + x ] = this.terrainFunc.getValueFunc([x, y]);
             }
-
         }
 
         return data;
