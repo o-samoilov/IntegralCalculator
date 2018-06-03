@@ -33,13 +33,13 @@ function SceneBuilder() {
         this.initAreaIntegral();
 
         //TODO draw Terrain
-        var terrainWidthExtents = this.ranges.XMAX - this.ranges.XMIN;
+        /*var terrainWidthExtents = this.ranges.XMAX - this.ranges.XMIN;
         var terrainDepthExtents = this.ranges.YMAX - this.ranges.YMIN;
         var terrainWidth = terrainWidthExtents;
         var terrainDepth = terrainDepthExtents;
 
         heightData = this.generateHeight( terrainWidth, terrainDepth );
-        this.initTerrain(terrainWidthExtents, terrainDepthExtents, terrainWidth, terrainDepth);
+        this.initTerrain(terrainWidthExtents, terrainDepthExtents, terrainWidth, terrainDepth);*/
     };
 
     this.init = function() {

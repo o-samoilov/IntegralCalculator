@@ -37,6 +37,10 @@ var GuiContent = function() {
     this.example5 = function () {
         process('POW(x, 2)', 'SIN(y)', -5, 5);
     };
+
+    this.example6 = function () {
+        process('POW(1 - POW(x, 2), 0.5)', '1', -1, 1);
+    };
 };
 
 var guiContent = new GuiContent();
@@ -52,6 +56,7 @@ examplesFolder.add(guiContent, 'example2').name('Example #2');
 examplesFolder.add(guiContent, 'example3').name('Example #3');
 examplesFolder.add(guiContent, 'example4').name('Example #4');
 examplesFolder.add(guiContent, 'example5').name('Example #5');
+examplesFolder.add(guiContent, 'example6').name('Example #6');
 
 gui.add(guiContent, 'Help');
 gui.add(guiContent, 'GitHub');
@@ -59,11 +64,12 @@ gui.add(guiContent, 'GitHub');
 //gui.remember(guiContent);
 
 function calculateIntegral(func, surface, xMin, xMax) {
+    var methodId = 1;
     var data = {
         command: 'calculateIntegral',
         version: 1,
         params: {
-            methods: [1],
+            methods: [methodId],
             func: {
                 func: func.getFunc(),
                 vars: func.getVars()
@@ -90,19 +96,42 @@ function calculateIntegral(func, surface, xMin, xMax) {
 
         success: function(result, status, xhr) {
             $('#container-result').html("");
-            $('#container-result').append($('<table id="table-metadata"></table>'));
             $('#container-result').append($('<table id="table-integral-sum"></table>'));
+            $('#container-result').append($('<table id="table-metadata"></table>'));
 
             var response = JSON.parse(result);
 
             for (var i = 0; i < response.metadata.length; i++) {
                 $('#table-metadata').append($('<tr>'));
-                $('#table-metadata tr:last').append($('<td>').append($('<span>' + response.metadata[i].name + ': ' + response.metadata[i].value + '</span>')).addClass('td-result'));
+                if (response.metadata[i].id == 'intervals') {
+
+                    var intervals    = response.metadata[i].value;
+                    var strIntervals = '';
+
+                    for (var j = 0; j < intervals.length; j++) {
+                        strIntervals += '[' + intervals[j]['start'] + ', ';
+                        strIntervals += intervals[j]['end'] + ']';
+
+                        if (j !== intervals.length - 1) {
+                            strIntervals += ' ∧ ';
+                        }
+                    }
+
+
+                    $('#table-metadata tr:last').append($('<td>').append($('<span>x ∈ ' + strIntervals + '</span>')).addClass('td-result'));
+                } else {
+                    $('#table-metadata tr:last').append($('<td>').append($('<span>' + response.metadata[i].name + ': ' + response.metadata[i].value + '</span>')).addClass('td-result'));
+                }
             }
 
             for (var i = 0; i < response.integral_sum.length; i++) {
-                $('#table-integral-sum').append($('<tr>'));
-                $('#table-integral-sum tr:last').append($('<td>').append($('<span>' + response.integral_sum[i].name + ': ' + response.integral_sum[i].value + '</span>')).addClass('td-result'));
+                if (response.integral_sum[i].id == methodId) {
+                    $('#table-integral-sum').append($('<tr>'));
+                    $('#table-integral-sum tr:last').append($('<td>').append($('<img src="img/integral.svg" alt="Integral" id="integral-img">')).addClass('td-result-func'));
+                    $('#table-integral-sum tr:last').append($('<td>').append($('<span>' + response.integral_sum[i].value + '</span>')).addClass('td-result-answer'));
+
+                    break;
+                }
             }
         },
 
