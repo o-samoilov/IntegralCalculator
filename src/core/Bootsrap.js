@@ -7,7 +7,7 @@ if (!Detector.webgl) {
 }
 
 var configs = {
-    serverURL: "http://integralcalculatorserver.local/",
+    serverURL: "#VALUE#",
     helpURL:   "https://github.com/a-samoylov/IntegralCalculator/blob/master/README.md",
     gitHubURL: "https://github.com/a-samoylov/IntegralCalculator"
 };
