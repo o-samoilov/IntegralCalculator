@@ -1,85 +1,56 @@
-three.js
-========
+## What is this?
 
-[![Latest NPM release][npm-badge]][npm-badge-url]
-[![License][license-badge]][license-badge-url]
-[![Dependencies][dependencies-badge]][dependencies-badge-url]
-[![Dev Dependencies][devDependencies-badge]][devDependencies-badge-url]
+With this project you can model **contour integrals**.
 
-#### JavaScript 3D library ####
+**Example working project: [here](http://integrals.top/)**
 
-The aim of the project is to create an easy to use, lightweight, 3D library. The library provides &lt;canvas&gt;, &lt;svg&gt;, CSS3D and WebGL renderers.
+The project base on [Three.js](https://threejs.org/)
 
-[Examples](http://threejs.org/examples/) &mdash;
-[Documentation](http://threejs.org/docs/) &mdash;
-[Wiki](https://github.com/mrdoob/three.js/wiki) &mdash;
-[Migrating](https://github.com/mrdoob/three.js/wiki/Migration-Guide) &mdash;
-[Questions](http://stackoverflow.com/questions/tagged/three.js) &mdash;
-[Forum](https://discourse.threejs.org/) &mdash;
-[Gitter](https://gitter.im/mrdoob/three.js) &mdash;
-[Slack](https://threejs-slack.herokuapp.com/)
 
-### Usage ###
+## Getting Started
 
-Download the [minified library](http://threejs.org/build/three.min.js) and include it in your HTML, or install and import it as a [module](http://threejs.org/docs/#manual/introduction/Import-via-modules),
-Alternatively see [how to build the library yourself](https://github.com/mrdoob/three.js/wiki/Build-instructions).
+### Installing
 
-```html
-<script src="js/three.min.js"></script>
+Clone the project.
+
+```
+git clone https://github.com/a-samoylov/IntegralCalculator
 ```
 
-This code creates a scene, a camera, and a geometric cube, and it adds the cube to the scene. It then creates a `WebGL` renderer for the scene and camera, and it adds that viewport to the document.body element. Finally, it animates the cube within the scene for the camera.
+Configure `public/js/configs.js`
 
-```javascript
-var camera, scene, renderer;
-var geometry, material, mesh;
+You need set only `serverURL` this is path to [IntegralCalculatorServer](https://github.com/a-samoylov/IntegralCalculatorServer).
 
-init();
-animate();
+IntegralCalculatorServer - it is backend part of project write on PHP. Project by AJAX call to it and 
+IntegralCalculatorServer calculate contour integrals value.
 
-function init() {
+Example:
 
-	camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 10 );
-	camera.position.z = 1;
-
-	scene = new THREE.Scene();
-
-	geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
-	material = new THREE.MeshNormalMaterial();
-
-	mesh = new THREE.Mesh( geometry, material );
-	scene.add( mesh );
-
-	renderer = new THREE.WebGLRenderer( { antialias: true } );
-	renderer.setSize( window.innerWidth, window.innerHeight );
-	document.body.appendChild( renderer.domElement );
-
-}
-
-function animate() {
-
-	requestAnimationFrame( animate );
-
-	mesh.rotation.x += 0.01;
-	mesh.rotation.y += 0.02;
-
-	renderer.render( scene, camera );
-
-}
+```js
+var configs = {
+    serverURL: "https://s.integrals.top/",
+    helpURL:   "https://github.com/a-samoylov/IntegralCalculator/blob/master/README.md",
+    gitHubURL: "https://github.com/a-samoylov/IntegralCalculator"
+};
 ```
 
-If everything went well you should see [this](https://jsfiddle.net/f2Lommf5/).
+### Example
 
-### Change log ###
+Axles:
 
-[releases](https://github.com/mrdoob/three.js/releases)
+- ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) - x
+- ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) - y
+- ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) - z
 
 
-[npm-badge]: https://img.shields.io/npm/v/three.svg
-[npm-badge-url]: https://www.npmjs.com/package/three
-[license-badge]: https://img.shields.io/npm/l/three.svg
-[license-badge-url]: ./LICENSE
-[dependencies-badge]: https://img.shields.io/david/mrdoob/three.js.svg
-[dependencies-badge-url]: https://david-dm.org/mrdoob/three.js
-[devDependencies-badge]: https://img.shields.io/david/dev/mrdoob/three.js.svg
-[devDependencies-badge-url]: https://david-dm.org/mrdoob/three.js#info=devDependencies
+![alt text](https://raw.githubusercontent.com/a-samoylov/IntegralCalculator/master/Screenshots/Screenshot_1.png)
+
+![alt text](https://raw.githubusercontent.com/a-samoylov/IntegralCalculator/master/Screenshots/Screenshot_2.png)
+
+
+## Authors
+
+Alexander Samoylov
+> [LinkedIn](https://www.linkedin.com/in/alexander-samoylov/)
+
+> [GitHub](https://github.com/a-samoylov)
